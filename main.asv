@@ -19,7 +19,7 @@ b = ones(1, 1, 1, n_filters);
 pad = 1;
 stride = 5;
 
-learning_rate = 0.01;
+learning_rate = 0.0001;
 
 first_layer_size = 250;
 second_layer_size = 50;
@@ -61,10 +61,12 @@ for ite=1:iterations
     layer_2 = sigmoid(layer_1 * W1_2, 0);
     
     layer_2_error = Y - layer_2;
-    layer_2_delta = learning_rate * layer_2_error .* sigmoid(layer_2, 1);
+    layer_2_delta = layer_2_error .* sigmoid(layer_2, 1);
+    
+    
     
     layer_1_error = layer_2_delta * W1_2';
-    layer_1_delta = learning_rate * layer_1_error .* sigmoid(layer_1, 1);
+    layer_1_delta = layer_1_error .* sigmoid(layer_1, 1);
 
     W0_1 = W0_1 + flattened' * layer_1_delta;
     W1_2 = W1_2 + layer_1' * layer_2_delta;
@@ -72,7 +74,7 @@ for ite=1:iterations
     % Calculating the error of the weights between the pooling layer and
     % the dense layer
     layer_0_error = layer_1_delta * W0_1';
-    layer_0_delta = learning_rate * layer_0_error .* sigmoid(layer_0, 1);
+    layer_0_delta = layer_0_error .* sigmoid(layer_0, 1);
     
     % Reshaping the pooling error (Mx50 => Mx250)
     unflattened_delta = reshape(layer_0_delta, [3, size(pooled_images, 2), size(pooled_images, 3), size(pooled_images, 4)]);
@@ -82,15 +84,15 @@ for ite=1:iterations
     
     [dA_prev, dW, db] = backward_prop_conv(pooling_error, A_prev, W, stride, pad);
     
-    W = W + learning_rate * dW;
-    b = b + learning_rate * db;
+    W = W + dW;
+    b = b + db;
     
-    fprintf('Errors [L2: %.2f, L1: %.2f, L0: %.2f, PL: %.2f, CL: %.2f]\n', layer_2_delta, layer_1_delta, layer_0_delta, pooling_error, dW)
+    fprintf('Errors [L2: %.2f, L1: %.2f, ]\n', layer_2_error, layer_1_error)
     
     errors(iterations, 1) = abs(sum(layer_1_error, 'all'));
     errors(iterations, 2) = abs(sum(layer_2_error, 'all'));
     
-    plot(errors(:, 1));
+    plot(errors);
     drawnow
     
 end
