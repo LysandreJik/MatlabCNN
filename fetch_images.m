@@ -12,7 +12,7 @@ function [images] = fetch_images()
     
     baseFileName = jpegFiles(1).name;
     fullFileName = fullfile(myFolder, baseFileName);
-    fprintf(1, 'Now reading %s\n', fullFileName);
+%     fprintf(1, 'Now reading %s\n', fullFileName);
     imageArray = imread(fullFileName);
     images = zeros(length(jpegFiles), size(imageArray, 1), size(imageArray, 2), size(imageArray, 3));
     images(1, :, :, :) = imageArray;
@@ -20,9 +20,8 @@ function [images] = fetch_images()
     for k = 2:length(jpegFiles)
       baseFileName = jpegFiles(k).name;
       fullFileName = fullfile(myFolder, baseFileName);
-      fprintf(1, 'Now reading %s\n', fullFileName);
+%       fprintf(1, 'Now reading %s\n', fullFileName);
       imageArray = imread(fullFileName);
-      imshow(imageArray);  % Display image.
       images(k, :, :, :) = imageArray;
     end
 end

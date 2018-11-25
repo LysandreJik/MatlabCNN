@@ -5,10 +5,6 @@ function [A, m, n_H, n_W, n_C] = pooling(A_prev, stride, kernel_size)
     n_W = floor(1 + (n_W_prev - kernel_size) / stride);
     
     A = zeros(m, n_H, n_W, n_C);
-    
-    disp(n_H);
-    disp(n_W);
-    
     averaging_filter = ones(kernel_size);
     
     for i=1:m
